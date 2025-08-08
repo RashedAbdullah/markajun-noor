@@ -1,6 +1,4 @@
 import { database_connection } from "@/lib/db";
-import { BASE_URL, YEARLY_PAYMENT_API_CONFIG } from "./config";
-import { fetchWrapper } from "./fetch-wrapper";
 import { yearlyPaymentModel } from "@/models/yearly-payment-model";
 import { IYearlyPayment } from "../../../@types/yearly-amount";
 

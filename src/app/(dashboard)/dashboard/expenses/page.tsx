@@ -22,7 +22,7 @@ const ExpensesPage = async () => {
 
           {/* View Expenses Tab */}
           <TabsContent value="view" className="mt-6">
-            <Expenses expenses={expenses} />
+            <Expenses expenses={JSON.parse(JSON.stringify(expenses))} />
           </TabsContent>
 
           {/* Add Expense Tab */}
@@ -32,13 +32,13 @@ const ExpensesPage = async () => {
 
           {/* Update Expense Tab */}
           <TabsContent value="update" className="mt-6">
-            <UpdateExpense expenses={expenses} />
+            <UpdateExpense expenses={JSON.parse(JSON.stringify(expenses))} />
           </TabsContent>
         </Tabs>
       </div>
     );
   } catch (error) {
-  console.error("Failed to fetch expenses:", error);
+    console.error("Failed to fetch expenses:", error);
     return <div>Error loading expenses.</div>;
   }
 };

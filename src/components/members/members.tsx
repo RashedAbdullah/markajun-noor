@@ -33,7 +33,10 @@ const Members = async () => {
                   >
                     <div className="col-span-1">
                       <Avatar>
-                        <AvatarImage src={member.avatar} />
+                        <AvatarImage
+                          src={member.avatar}
+                          className="object-cover"
+                        />
                         <AvatarFallback>{getEnToBn(index + 1)}</AvatarFallback>
                       </Avatar>
                     </div>

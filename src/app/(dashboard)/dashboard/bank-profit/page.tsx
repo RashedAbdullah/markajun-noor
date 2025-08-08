@@ -21,7 +21,9 @@ const BankProfit = async () => {
 
           {/* View Profits Tab */}
           <TabsContent value="view" className="mt-6">
-            <BankProfits bankProfits={bankProfits} />
+            <BankProfits
+              bankProfits={JSON.parse(JSON.stringify(bankProfits))}
+            />
           </TabsContent>
 
           {/* Add Profit Tab */}
@@ -31,13 +33,13 @@ const BankProfit = async () => {
 
           {/* Update Profit Tab */}
           <TabsContent value="update" className="mt-6">
-            <UpdateProfit bankProfits={bankProfits} />
+            <UpdateProfit bankProfits={JSON.parse(JSON.stringify(bankProfits))} />
           </TabsContent>
         </Tabs>
       </div>
     );
   } catch (error) {
-  console.error("Failed to fetch bank profit:", error);
+    console.error("Failed to fetch bank profit:", error);
     return <div>Error loading bank profit.</div>;
   }
 };

@@ -26,7 +26,10 @@ const MembersPage = async () => {
             >
               সদস্য আপডেট করুন
             </TabsTrigger>
-            <TabsTrigger value="add-member" className="py-2 text-sm sm:text-base">
+            <TabsTrigger
+              value="add-member"
+              className="py-2 text-sm sm:text-base"
+            >
               নতুন সদস্য যুক্ত করুন
             </TabsTrigger>
           </TabsList>
@@ -37,7 +40,7 @@ const MembersPage = async () => {
 
           {/* Update Member Tab - Responsive Form */}
           <TabsContent value="update-member" className="mt-4">
-            <UpdateMemberForm members={members} />
+            <UpdateMemberForm members={JSON.parse(JSON.stringify(members))} />
           </TabsContent>
 
           {/* Add Member Tab - Responsive Form */}
@@ -48,7 +51,7 @@ const MembersPage = async () => {
       </div>
     );
   } catch (error) {
-  console.error("Failed to fetch members:", error);
+    console.error("Failed to fetch members:", error);
     return <div>Error loading members.</div>;
   }
 };

@@ -41,7 +41,7 @@ const AddInstalmentForm = ({ investments }: { investments: IInvestment[] }) => {
     defaultValues: {
       investmentId: "",
       amount: 0,
-      date: new Date().toISOString().split("T")[0], // Default to today's date
+      date: new Date().toISOString().split("T")[0],
     },
   });
 
@@ -50,10 +50,20 @@ const AddInstalmentForm = ({ investments }: { investments: IInvestment[] }) => {
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     try {
-      await InvestmentService.addInstalment(data.investmentId, {
-        amount: data.amount,
-        date: data.date,
+      const res = await fetch(`/api/investments/${data.investmentId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: Number(data.amount),
+          date: data.date,
+        }),
       });
+
+      if (!res.ok) {
+        throw new Error("Failed to add instalment");
+      }
 
       toast.success("ইনস্টলমেন্ট সফলভাবে যোগ করা হয়েছে");
       form.reset();
@@ -91,7 +101,10 @@ const AddInstalmentForm = ({ investments }: { investments: IInvestment[] }) => {
                   </FormControl>
                   <SelectContent>
                     {investments.map((investment) => (
-                      <SelectItem key={investment._id} value={investment._id}>
+                      <SelectItem
+                        key={investment._id.toString()}
+                        value={investment._id.toString()}
+                      >
                         {investment.investee} - {investment.amount} টাকা
                       </SelectItem>
                     ))}
@@ -113,6 +126,7 @@ const AddInstalmentForm = ({ investments }: { investments: IInvestment[] }) => {
                     type="number"
                     placeholder="পরিমাণ লিখুন"
                     {...field}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
                     disabled={!selectedInvestee}
                   />
                 </FormControl>

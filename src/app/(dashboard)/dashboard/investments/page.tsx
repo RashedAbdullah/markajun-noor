@@ -14,15 +14,21 @@ const InvestmentsPage = async () => {
         <h2 className="text-2xl font-bold mb-6">বিনিয়োগ ব্যবস্থাপনা</h2>
         <Tabs defaultValue="instalment">
           <TabsList className="grid grid-cols-3 w-full">
-            <TabsTrigger value="instalment">কিস্তি পরিশোধ</TabsTrigger>
+            {investments.length > 0 && (
+              <TabsTrigger value="instalment">কিস্তি পরিশোধ</TabsTrigger>
+            )}
             <TabsTrigger value="add">নতুন বিনিয়োগ</TabsTrigger>
-            <TabsTrigger value="update">বিনিয়োগ আপডেট</TabsTrigger>
+            {investments.length > 0 && (
+              <TabsTrigger value="update">বিনিয়োগ আপডেট</TabsTrigger>
+            )}
           </TabsList>
 
           {/* Add Investment Tab */}
-          <TabsContent value="instalment" className="mt-6">
-            <AddInstalmentForm investments={investments} />
-          </TabsContent>
+          {investments.length > 0 && (
+            <TabsContent value="instalment" className="mt-6">
+              <AddInstalmentForm investments={JSON.parse(JSON.stringify(investments))} />
+            </TabsContent>
+          )}
 
           {/* Add Investment Tab */}
           <TabsContent value="add" className="mt-6">
@@ -30,14 +36,16 @@ const InvestmentsPage = async () => {
           </TabsContent>
 
           {/* Update Investment Tab */}
-          <TabsContent value="update" className="mt-6">
-            <UpdateInvestment investments={investments} />
-          </TabsContent>
+          {investments.length > 0 && (
+            <TabsContent value="update" className="mt-6">
+              <UpdateInvestment investments={JSON.parse(JSON.stringify(investments))} />
+            </TabsContent>
+          )}
         </Tabs>
       </div>
     );
   } catch (error) {
-  console.error("Failed to fetch investments:", error);
+    console.error("Failed to fetch investments:", error);
     return <div>Error loading investments.</div>;
   }
 };

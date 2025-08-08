@@ -11,7 +11,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { memberService, paymentService } from "@/services";
+import {
+  memberService,
+  paymentService,
+  yearlyPaymentService,
+} from "@/services";
 import { formatDateToBangla } from "@/utils/format-date";
 import { formatPrice } from "@/utils/formate-price";
 import { IPayment } from "../../../../../@types/payment";
@@ -28,7 +32,9 @@ const MemberDetailsPage = async ({ params }: Props) => {
 
   const { data: member } = await memberService.getMemberById(id);
   const { data: user } = await paymentService.getPaymentsByMemberId(id, "", "");
-
+  const { data: yearlyPayments } =
+    await yearlyPaymentService.getYealyPaymentsByMemberId(id);
+  console.log(yearlyPayments);
   const paymentHistory = user?.payments;
   const totalPayments = paymentHistory.reduce(
     (sum: number, payment: IPayment) => sum + (payment.payment || 0),
@@ -101,8 +107,12 @@ const MemberDetailsPage = async ({ params }: Props) => {
                   {getEnToBn(member.shares)}
                 </p>
                 <p>
-                  <span className="font-medium">মোট জমা:</span>{" "}
-                  {formatPrice(totalPayments)}
+                  <span className="font-medium">এককালীন জমা:</span>{" "}
+                  {formatPrice(yearlyPayments[0]?.amount || 0)}
+                </p>
+                <p>
+                  <span className="font-medium">মোট জমা:</span>{" "}
+                  {formatPrice(yearlyPayments[0]?.amount + totalPayments)}
                 </p>
               </div>
             </div>

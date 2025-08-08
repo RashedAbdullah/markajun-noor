@@ -67,13 +67,19 @@ const MonthlyPage = async () => {
               <div className="p-6">
                 <TabsContent value="tab-1" className="mt-0">
                   <div className="bg-blue-50/30 p-5 rounded-lg border border-blue-100">
-                    <CreateMonthlyAmount members={members} />
+                    {members.length > 0 && (
+                      <CreateMonthlyAmount
+                        members={JSON.parse(JSON.stringify(members))}
+                      />
+                    )}
                   </div>
                 </TabsContent>
 
                 <TabsContent value="tab-2" className="mt-0">
                   <div className="bg-indigo-50/30 p-5 rounded-lg border border-indigo-100">
-                    <UpdateMonthlyAMount members={members} />
+                    <UpdateMonthlyAMount
+                      members={JSON.parse(JSON.stringify(members))}
+                    />
                   </div>
                 </TabsContent>
               </div>
@@ -84,7 +90,11 @@ const MonthlyPage = async () => {
     );
   } catch (error) {
     console.error("Failed to fetch amounts:", error);
-    return <div>Error loading amounts.</div>;
+    return (
+      <div className="text-center py-20 text-red-500">
+        Error loading amounts.
+      </div>
+    );
   }
 };
 

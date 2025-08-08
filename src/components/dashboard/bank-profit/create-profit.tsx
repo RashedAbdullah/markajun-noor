@@ -17,7 +17,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { format } from "date-fns";
 import { IBankProfit } from "../../../../@types/bank-profit";
-import { BankProfitService } from "@/services";
 
 // Schema for form validation
 const bankProfitSchema = z.object({
@@ -46,7 +45,16 @@ const CreateProfit = () => {
         description: data.description || "ব্যাংক থেকে আসা প্রফিট",
       };
 
-      await BankProfitService.createBankProfit(newBankProfit);
+      const res = await fetch("/api/bank-profit", {
+        method: "POST",
+        body: JSON.stringify(newBankProfit),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to create bank profit");
+      }
+
+      // await BankProfitService.createBankProfit(newBankProfit);
 
       form.reset();
     } catch (error) {

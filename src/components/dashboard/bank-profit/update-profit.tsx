@@ -63,7 +63,14 @@ const UpdateProfit = ({ bankProfits }: { bankProfits: IBankProfit[] }) => {
     try {
       if (!selectedProfit) return;
 
-      await BankProfitService.updateBankProfit(selectedProfit._id ?? "", data);
+      const res = await fetch(`/api/bank-profit/${selectedProfit._id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to update bank profit");
+      }
 
       form.reset();
       setSelectedProfit(null);

@@ -24,25 +24,19 @@ import {
 } from "@/components/ui/form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { IUser } from "../../../../@types/user";
-import { memberService } from "@/services";
 
 // Zod schema based on your mongoose model
 const memberSchema = z.object({
-  memberId: z.string().min(1, "সদস্য নির্বাচন করুন"),
+  memberId: z.string().min(1, "সদস্য নির্বাচন করতে হবে"),
   name: z.string().min(3, "নাম অবশ্যই ৩ অক্ষরের বেশি হতে হবে"),
   father: z.string().optional(),
-  nationalId: z
-    .string()
-    .regex(/^\d{10,17}$/, "সঠিক জাতীয় আইডি নম্বর দিন")
-    .optional(),
-  mobile: z
-    .string()
-    .regex(/^01[3-9]\d{8}$/, "সঠিক মোবাইল নম্বর দিন")
-    .optional(),
-  position: z.string().min(2, "পদবী অবশ্যই ২ অক্ষরের বেশি হতে হবে"),
-  shares: z.number().min(1, "শেয়ার সংখ্যা ১ এর বেশি হতে হবে"),
+  nationalId: z.string().optional(),
+  mobile: z.string().optional(),
   email: z.string().email("সঠিক ইমেইল দিন"),
-  password: z.string().min(6, "পাসওয়ার্ড দিতে হবে"),
+  password: z.string().min(6, "পাসওয়ার্ড অবশ্যই ৬ অক্ষরের বেশি হতে হবে"),
+  position: z.string().min(2, "পদবী অবশ্যই ২ অক্ষরের বেশি হতে হবে"),
+  entryDate: z.string().min(1, "যোগদানের তারিখ দিন"),
+  shares: z.number().min(1, "শেয়ার সংখ্যা ১ এর বেশি হতে হবে"),
 });
 
 type MemberFormValues = z.infer<typeof memberSchema>;
@@ -64,6 +58,7 @@ const UpdateMemberForm = ({ members }: { members: IUser[] }) => {
   });
 
   const selectedMemberId = form.watch("memberId");
+  console.log("memberId: ", members);
 
   // When member is selected, populate form with their data
   useEffect(() => {
@@ -72,14 +67,21 @@ const UpdateMemberForm = ({ members }: { members: IUser[] }) => {
 
       const getSelectedUserData = async () => {
         if (member) {
-          const { data: selectedMember } = await memberService.getMemberById(
-            member._id.toString()
-          );
-
           form.reset({
-            ...selectedMember,
-            memberId: member._id.toString(),
-            shares: member.shares || 0,
+            memberId: member._id,
+            name: member.name,
+            email: member.email,
+            password: member.password,
+            father: member.father || "",
+            nationalId: member.nationalId || "",
+            mobile: member.mobile || "",
+            position: member.position,
+            entryDate: typeof member.entryDate === "string"
+              ? member.entryDate
+              : member.entryDate
+              ? new Date(member.entryDate).toISOString().slice(0, 10)
+              : "",
+            shares: Number(member.shares) || 0,
           });
         }
       };
@@ -89,8 +91,28 @@ const UpdateMemberForm = ({ members }: { members: IUser[] }) => {
 
   const onSubmit = async (data: MemberFormValues) => {
     try {
-      await memberService.updateMember(selectedMemberId, data);
-      // Show success message
+      const res = await fetch(`/api/members/${selectedMemberId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          password: data.password,
+          father: data.father,
+          nationalId: data.nationalId,
+          mobile: data.mobile,
+          position: data.position,
+          shares: data.shares,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to update member");
+      }
+
+      form.reset();
     } catch (error) {
       console.error("Error updating member:", error);
     }

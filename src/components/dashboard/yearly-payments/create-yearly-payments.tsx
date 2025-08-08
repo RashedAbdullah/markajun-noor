@@ -43,7 +43,7 @@ const CreateYearlyPayment = ({ members }: { members: IUser[] }) => {
     resolver: zodResolver(paymentSchema),
     defaultValues: {
       member: "",
-      amount: 4000,
+      amount: 10000,
       title: "",
       paymentDate: format(new Date(), "yyyy-MM-dd"),
     },
@@ -62,7 +62,17 @@ const CreateYearlyPayment = ({ members }: { members: IUser[] }) => {
         paymentDate: data.paymentDate,
       };
 
-      await yearlyPaymentService.createYearlyPayment(newPayment);
+      const res = await fetch("/api/yearly-payment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newPayment),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to create yearly payment");
+      }
 
       form.reset();
     } catch (error) {

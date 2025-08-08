@@ -31,7 +31,7 @@ import { format } from "date-fns";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IUser } from "../../../../@types/user";
-import { paymentService } from "@/services";
+// import { paymentService } from "@/services";
 
 // Schema for form validation with Bangla error messages
 const paymentSchema = z.object({
@@ -50,7 +50,7 @@ const CreateMonthlyAmount = ({ members }: { members: IUser[] }) => {
     resolver: zodResolver(paymentSchema),
     defaultValues: {
       member: "",
-      payment: 1500,
+      payment: 3000,
       month: format(new Date(), "yyyy-MM"),
       paymentDate: format(new Date(), "yyyy-MM-dd"),
     },
@@ -64,7 +64,7 @@ const CreateMonthlyAmount = ({ members }: { members: IUser[] }) => {
       (m) => m._id.toString() === selectedMemberId
     );
     if (selectedMember) {
-      const newAmount = selectedMember.shares * 1500;
+      const newAmount = selectedMember.shares * 3000;
       form.setValue("payment", newAmount);
     }
   }, [selectedMemberId, members, form]);
@@ -78,7 +78,20 @@ const CreateMonthlyAmount = ({ members }: { members: IUser[] }) => {
         month: data.month,
         paymentDate: data.paymentDate,
       };
-      await paymentService.createPayment(newPayment);
+      // Call the service to create the payment
+      const res = await fetch("/api/payments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newPayment),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to create payment");
+      }
+
+      // await paymentService.createPayment(newPayment);
       form.reset();
     } catch (error) {
       console.error("Error submitting form:", error);

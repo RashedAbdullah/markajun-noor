@@ -85,21 +85,6 @@ export const PUT = async (req: NextRequest, { params }: Props) => {
       father,
     } = body;
 
-    if (
-      !name ||
-      !email ||
-      !mobile ||
-      !nationalId ||
-      !password ||
-      !position ||
-      !father
-    ) {
-      return NextResponse.json(
-        { success: false, message: "All fields are required" },
-        { status: 400 }
-      );
-    }
-
     const updatedMember = await userModel.findByIdAndUpdate(id, {
       name,
       email,

@@ -1,7 +1,7 @@
 import React from "react";
 
 const UpdateYearlyPayment = () => {
-  return <div>UpdateYearlyPayments</div>;
+  return <div></div>;
 };
 
 export default UpdateYearlyPayment;

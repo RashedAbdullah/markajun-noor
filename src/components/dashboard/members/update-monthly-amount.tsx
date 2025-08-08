@@ -23,7 +23,6 @@ import { format, parseISO } from "date-fns";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IUser } from "../../../../@types/user";
-import { paymentService } from "@/services";
 import { toast } from "sonner";
 
 const paymentSchema = z.object({
@@ -104,7 +103,7 @@ const UpdateMonthlyPayment = ({ members }: { members: IUser[] }) => {
         memberName: userData.user.name,
         payment: payment.status.payment,
         month: payment.month,
-        paymentDate: payment.status.paymentDate || "", // Ensure we have a string
+        paymentDate: payment.status.paymentDate || "",
       }));
   };
 
@@ -115,10 +114,9 @@ const UpdateMonthlyPayment = ({ members }: { members: IUser[] }) => {
 
       setIsLoading(true);
       try {
-        const response = await paymentService.getPaymentsByMemberId(
-          selectedMember
-        );
-        const processedPayments = processPayments(response);
+        const ress = await fetch(`/api/payments?member=${selectedMember}`);
+        const processedPayments = processPayments(await ress.json());
+
         setMemberPayments(processedPayments);
         setSelectedPayment(null);
         form.reset({
@@ -138,7 +136,7 @@ const UpdateMonthlyPayment = ({ members }: { members: IUser[] }) => {
     };
 
     fetchPayments();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedMember]);
 
   // Populate form when payment is selected
@@ -159,7 +157,7 @@ const UpdateMonthlyPayment = ({ members }: { members: IUser[] }) => {
       month,
       paymentDate: format(parseISO(paymentDate), "yyyy-MM-dd"),
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPayment]);
 
   const onUpdate = async (data: PaymentFormValues) => {
@@ -167,19 +165,27 @@ const UpdateMonthlyPayment = ({ members }: { members: IUser[] }) => {
 
     setIsLoading(true);
     try {
-      await paymentService.updatePayment(selectedPayment._id, {
-        member: selectedPayment.member,
-        month: data.month,
-        payment: data.payment,
-        paymentDate: new Date(data.paymentDate).toISOString(),
+      const res = await fetch(`/api/payments/${selectedPayment._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          member: selectedPayment.member,
+          month: data.month,
+          payment: data.payment,
+          paymentDate: new Date(data.paymentDate).toISOString(),
+        }),
       });
 
       // Refresh payments after update
-      const response = await paymentService.getPaymentsByMemberId(
-        selectedPayment.member
+      const response = await fetch(
+        `/api/payments?member=${selectedPayment.member}`
       );
-
-      const processedPayments = processPayments(response);
+      if (!res.ok || !response.ok) {
+        throw new Error("Failed to update payment");
+      }
+      const processedPayments = processPayments(await response.json());
       setMemberPayments(processedPayments);
 
       toast("Success", {

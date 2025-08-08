@@ -11,21 +11,17 @@ const YearlyPaymentsPage = async () => {
     return (
       <div className="container">
         <h2 className="text-2xl font-bold mb-6">বার্ষিক পেমেন্ট ব্যবস্থাপনা</h2>
-        <Tabs defaultValue="view">
+        <Tabs defaultValue="add">
           <TabsList className="grid grid-cols-3 w-full">
-            <TabsTrigger value="view">বার্ষিক পেমেন্ট দেখুন</TabsTrigger>
             <TabsTrigger value="add">নতুন পেমেন্ট যুক্ত করুন</TabsTrigger>
             <TabsTrigger value="update">পেমেন্ট আপডেট করুন</TabsTrigger>
           </TabsList>
 
-          {/* View Profits Tab */}
-          <TabsContent value="view" className="mt-6">
-            <YearlyPayments />
-          </TabsContent>
-
           {/* Add Profit Tab */}
           <TabsContent value="add" className="mt-6">
-            <CreateYearlyPayment members={members} />
+            <CreateYearlyPayment
+              members={JSON.parse(JSON.stringify(members))}
+            />
           </TabsContent>
 
           {/* Update Profit Tab */}

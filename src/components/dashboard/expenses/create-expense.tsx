@@ -55,7 +55,16 @@ const CreateExpense = () => {
         note: data.note || "",
       };
 
-      await expensesService.createExpense(newExpense);
+      const res = await fetch("/api/expenses", {
+        method: "POST",
+        body: JSON.stringify(newExpense),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to create expense");
+      }
+
+      // await expensesService.createExpense(newExpense);
 
       form.reset();
     } catch (error) {
