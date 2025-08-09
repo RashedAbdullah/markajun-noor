@@ -13,7 +13,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { navigations } from "@/data/navigations";
 import { organizationInfo } from "@/data/organization-info";
-import ActiveLink from "./active-link";
+import ActiveLink from "./mobile-active-link";
 
 export default function MobileMenu() {
   return (
@@ -59,12 +59,14 @@ export default function MobileMenu() {
         </ul>
         {/* Signin */}
         <div className="mt-12">
-          <Link
-            href="/dashboard"
-            className="bg-brand px-4 py-3 text-base text-white rounded-full"
-          >
-            ড্যাশবোর্ড
-          </Link>
+          <SheetClose asChild>
+            <Link
+              href="/dashboard"
+              className="bg-brand px-4 py-3 text-base text-white rounded-full"
+            >
+              ড্যাশবোর্ড
+            </Link>
+          </SheetClose>
         </div>
         <SheetFooter>
           <h3 className="text-2xl font-medium">{organizationInfo.name}</h3>

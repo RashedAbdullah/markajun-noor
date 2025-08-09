@@ -13,7 +13,7 @@ const MembersPage = async () => {
         <header className="text-2xl font-bold mb-6">সদস্যবৃন্দ</header>
 
         <Tabs defaultValue="all-members" className="w-full">
-          <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 gap-2">
+          <TabsList className="">
             <TabsTrigger
               value="all-members"
               className="py-2 text-sm sm:text-base"
