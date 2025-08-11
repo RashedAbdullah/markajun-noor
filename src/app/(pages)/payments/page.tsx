@@ -16,6 +16,7 @@ import { paymentService } from "@/services";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { yearlyPaymentService } from "@/services/api/yearly-payment-api";
 import { getEnToBn } from "@/utils/en-to-bn";
+import { organizationInfo } from "@/data/organization-info";
 
 // Define member type based on API response
 type ApiMember = {
@@ -171,7 +172,7 @@ const MonthlyAmountPage = async () => {
       <HeroSection
         badge="লাস্ট ৩ মাসের হিসাব"
         title="মাসিক পেমেন্ট"
-        description="সিহাবুল খায়ের একটি আর্থিক সংগঠন যা গঠন করা হয়েছে জামিয়া মাদানিয়া সিলোনিয়া ২০২০-২১ মেশকাত ব্যাচের স্বেচ্ছাপ্রণোদিত কিছু ছাত্রের মাধ্যমে। আমাদের একমাত্র লক্ষ্য হালাল ও বৈধ পন্থায় মুনাফা লাভ অথবা সার্বিক সমঝোতায় নির্দিষ্ট খাতে ব্যয়।"
+        description={organizationInfo.description}
         image={mosque}
       />
 
