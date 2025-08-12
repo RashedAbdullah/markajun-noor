@@ -13,7 +13,7 @@ export const summaryService = {
 
       // 1. মোট ইনভেস্ট
       const totalInvestment = await investmentModel.aggregate([
-        { $group: { _id: null, total: { $sum: "$amount" } } },
+        { $group: { _id: null, total: { $sum: "$investedAmount" } } },
       ]);
 
       // 2. ইনভেস্ট থেকে জমা
@@ -72,7 +72,13 @@ export const summaryService = {
 
       return {
         totalInvestment: totalInvestment[0]?.total || 0,
-        paymentFromInvestment: paymentFromInvestment[0]?.total || 0,
+        currentInvestment:
+          (totalInvestment[0]?.total || 0) -
+          ((paymentFromInvestment[0]?.total || 0) -
+            (profitsFromInvestments[0]?.total || 0)),
+        paymentFromInvestment:
+          (paymentFromInvestment[0]?.total || 0) -
+          (profitsFromInvestments[0]?.total || 0),
         paymentsFromShares:
           (paymentsFromShares[0]?.total || 0) + (yearlyPayments[0]?.total || 0),
         profitDeposits: profitsFromInvestments[0]?.total || 0,

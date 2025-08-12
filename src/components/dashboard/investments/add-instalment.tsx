@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { InvestmentService } from "@/services";
+import { formatPrice } from "@/utils/formate-price";
 
 export const instalmentSchema = z.object({
   investmentId: z.string().min(1, "বিনিয়োগ নির্বাচন করুন"),
@@ -105,7 +106,8 @@ const AddInstalmentForm = ({ investments }: { investments: IInvestment[] }) => {
                         key={investment._id.toString()}
                         value={investment._id.toString()}
                       >
-                        {investment.investee} - {investment.amount} টাকা
+                        {investment.investee} -{" "}
+                        {formatPrice(investment.chargedAmount)}
                       </SelectItem>
                     ))}
                   </SelectContent>

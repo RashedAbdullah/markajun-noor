@@ -34,20 +34,20 @@ const InvestmentDetailsPage = async ({ params }: Props) => {
   const { id } = await params;
 
   const { data } = await InvestmentService.getInvestmentById(id);
-  const investment = Array.isArray(data) ? (data[0] as unknown as unknown as IInvestment) : (data as unknown as IInvestment);
+  const investment = Array.isArray(data)
+    ? (data[0] as unknown as unknown as IInvestment)
+    : (data as unknown as IInvestment);
 
   const totalPaid = investment.instalmentHistory.reduce(
     (sum, installment) => sum + installment.amount,
     0
   );
 
-  const remainingAmount = investment.amount - totalPaid;
-  const profitRemaining = investment.chargedProfit - investment.paidProfit;
-  const repaymentProgress = (totalPaid / investment.amount) * 100;
+  const remainingAmount = investment.chargedAmount - totalPaid;
+  const repaymentProgress = (totalPaid / investment.chargedAmount) * 100;
 
-  console.log(investment);
-  const profitProgress =
-    (investment.paidProfit / investment.chargedProfit) * 100;
+  const profitProgress = (investment.paidProfit / investment.profit) * 100;
+  console.log("profitProgress ", profitProgress);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-6 font-kalpurush">
@@ -71,7 +71,7 @@ const InvestmentDetailsPage = async ({ params }: Props) => {
           </div>
         </div>
         <div className="bg-secondary/50 px-4 py-2 rounded-lg">
-          <p className="text-sm text-muted-foreground">রেফারেন্স</p>
+          <p className="text-sm text-muted-foreground">রেফারেন্স / উকিল</p>
           <p className="font-medium">{investment.reference}</p>
         </div>
       </div>
@@ -159,7 +159,7 @@ const InvestmentDetailsPage = async ({ params }: Props) => {
               <div className="flex justify-between items-center mb-1">
                 <p className="text-sm text-muted-foreground">মোট অর্থ</p>
                 <p className="text-sm font-medium">
-                  {formatPrice(investment.amount)}
+                  {formatPrice(investment.chargedAmount)}
                 </p>
               </div>
               <Progress value={repaymentProgress} className="h-2" />
@@ -201,7 +201,7 @@ const InvestmentDetailsPage = async ({ params }: Props) => {
               <div className="flex justify-between items-center mb-1">
                 <p className="text-sm text-muted-foreground">আসনপ্রাপ্ত লাভ</p>
                 <p className="text-sm font-medium text-blue-600">
-                  {formatPrice(investment.chargedProfit)}
+                  {formatPrice(investment.profit)}
                 </p>
               </div>
               <Progress value={profitProgress} className="h-2 bg-blue-100" />
@@ -220,7 +220,7 @@ const InvestmentDetailsPage = async ({ params }: Props) => {
               <div className="bg-amber-50 p-3 rounded-lg border border-amber-100">
                 <p className="text-sm text-amber-800">অবশিষ্ট লাভ</p>
                 <p className="text-lg font-semibold text-amber-600">
-                  {formatPrice(profitRemaining)}
+                  {formatPrice(investment.profit - investment.paidProfit)}
                 </p>
                 <p className="text-xs text-amber-600 mt-1">
                   ({(100 - profitProgress).toFixed(1)}%)

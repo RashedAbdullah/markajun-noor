@@ -22,7 +22,7 @@ const Investments = async () => {
                   <div className="col-span-1 font-semibold">ক্র.</div>
                   <div className="col-span-6 font-semibold">নাম</div>
                   <div className="col-span-2 font-semibold">এমাউন্ট</div>
-                  <div className="col-span-2 font-semibold">ফেরত প্রদত্ত</div>
+                  <div className="col-span-2 font-semibold">ধার্যকৃত লাভ</div>
                   <div className="col-span-1 font-semibold">স্ট্যাটাস</div>
                 </div>
               </li>
@@ -47,7 +47,7 @@ const Investments = async () => {
                     </div>
                     <div className="col-span-6">{investment.investee}</div>
                     <div className="col-span-2">
-                      <p>{formatPrice(investment.amount)}</p>
+                      <p>{formatPrice(investment.investedAmount)}</p>
                       {investment.instalments && (
                         <p className="text-sm text-weak">
                           {getEnToBn(investment.instalments)} কিস্তি
@@ -55,7 +55,7 @@ const Investments = async () => {
                       )}
                     </div>
                     <div className="col-span-2">
-                      {formatPrice(investment.remainingAmount ?? 0)}
+                      {formatPrice(investment.profit ?? 0)}
                     </div>
                     <div className="col-span-1 flex items-center">
                       <div

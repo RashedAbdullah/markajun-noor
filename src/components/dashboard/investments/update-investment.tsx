@@ -23,18 +23,18 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IInvestment } from "../../../../@types/investment";
+import { formatPrice } from "@/utils/formate-price";
 
 // Updated schema with only the fields used in the PATCH controller
 const investmentSchema = z.object({
   investee: z.string().min(1, "Investee name is required"),
   reference: z.string().min(1, "Reference is required"),
   contact: z.string().min(1, "Contact is required"),
-  amount: z.number().positive("Amount must be positive"),
+  investedAmount: z.number().positive("Amount must be positive"),
   instalments: z.number().min(1, "At least 1 instalment required"),
   loanStartDate: z.string().min(1, "Start date is required"),
   dueDate: z.string().min(1, "Due date is required"),
-  chargedProfit: z.number().min(0, "Profit cannot be negative"),
-  paidProfit: z.number().min(0, "Paid profit cannot be negative"),
+  chargedAmount: z.number().min(0, "Profit cannot be negative"),
   status: z.enum(["Active", "Closed"]),
 });
 
@@ -50,12 +50,11 @@ const UpdateInvestment = ({ investments }: { investments: IInvestment[] }) => {
       investee: "",
       reference: "",
       contact: "",
-      amount: 0,
+      investedAmount: 0,
       instalments: 1,
       loanStartDate: format(new Date(), "yyyy-MM-dd"),
       dueDate: format(new Date(), "yyyy-MM-dd"),
-      chargedProfit: 0,
-      paidProfit: 0,
+      chargedAmount: 0,
       status: "Active",
     },
   });
@@ -74,13 +73,16 @@ const UpdateInvestment = ({ investments }: { investments: IInvestment[] }) => {
     try {
       if (!selectedInvestment) return;
 
-      const response = await fetch(`/api/investments/${selectedInvestment._id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `/api/investments/${selectedInvestment._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to update investment");
@@ -101,15 +103,16 @@ const UpdateInvestment = ({ investments }: { investments: IInvestment[] }) => {
             const inv = investments.find((i) => i._id === value);
             if (inv) handleEdit(inv);
           }}
-          value={selectedInvestment?._id || ""}
+          value={selectedInvestment?._id.toString() || ""}
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="বিনিয়োগ নির্বাচন করুন" />
           </SelectTrigger>
           <SelectContent>
             {investments.map((inv) => (
-              <SelectItem key={inv._id} value={inv._id}>
-                {inv.investee} ({inv.reference}) - {inv.amount} টাকা
+              <SelectItem key={inv._id.toString()} value={inv._id.toString()}>
+                {inv.investee} ({inv.reference}) -{" "}
+                {formatPrice(inv.investedAmount)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -139,7 +142,7 @@ const UpdateInvestment = ({ investments }: { investments: IInvestment[] }) => {
                 name="reference"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>রেফারেন্স নম্বর</FormLabel>
+                    <FormLabel>উকিল</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -164,7 +167,7 @@ const UpdateInvestment = ({ investments }: { investments: IInvestment[] }) => {
 
               <FormField
                 control={form.control}
-                name="amount"
+                name="investedAmount"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>বিনিয়োগ পরিমাণ (টাকা)</FormLabel>
@@ -228,28 +231,10 @@ const UpdateInvestment = ({ investments }: { investments: IInvestment[] }) => {
 
               <FormField
                 control={form.control}
-                name="chargedProfit"
+                name="chargedAmount"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>লাভের পরিমাণ (টাকা)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        {...field}
-                        onChange={(e) => field.onChange(Number(e.target.value))}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="paidProfit"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>প্রদত্ত লাভ (টাকা)</FormLabel>
                     <FormControl>
                       <Input
                         type="number"

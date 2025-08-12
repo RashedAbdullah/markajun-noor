@@ -9,7 +9,11 @@ const SummarySection = async () => {
 
     const summary = [
       {
-        title: "ইনভেস্ট করা হয়েছে",
+        title: "বর্তমান ইনভেস্টে আছে",
+        value: formatPrice(summaryData.currentInvestment),
+      },
+      {
+        title: "সর্বমোট ইনভেস্ট করা হয়েছে",
         value: formatPrice(summaryData.totalInvestment),
       },
       {

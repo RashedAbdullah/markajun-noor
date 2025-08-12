@@ -3,44 +3,23 @@ import { investmentModel } from "@/models/investment-model";
 import { getCloudinaryResponse } from "@/utils/cloudinary";
 import { NextRequest, NextResponse } from "next/server";
 
-export const GET = async () => {
-  try {
-    await database_connection();
-
-    const investments = await investmentModel.find({}).lean();
-    investments.sort((a, b) => {
-      if (a.status === b.status) return 0;
-      if (a.status === "Active") return -1;
-      if (b.status === "Active") return 1;
-      return 0;
-    });
-
-    return NextResponse.json({ success: true, data: investments });
-  } catch (error) {
-    console.log("Failed to fetch investments ", error);
-    return NextResponse.json(
-      { success: false, error: "Failed to fetch investments" },
-      { status: 500 }
-    );
-  }
-};
-
 export const POST = async (req: NextRequest) => {
   try {
     await database_connection();
     const formData = await req.formData();
-
     const {
       investee,
       reference,
       contact,
-      amount,
+      investedAmount,
       instalments,
       loanStartDate,
       dueDate,
-      chargedProfit,
+      chargedAmount,
       status,
     } = Object.fromEntries(formData.entries());
+
+    console.log(Object.fromEntries(formData.entries()));
 
     // Handle case when no file is uploaded
     let agreementReponse = "";
@@ -58,13 +37,13 @@ export const POST = async (req: NextRequest) => {
 
     const investment = await investmentModel.create({
       investee,
-      reference, // Add this
+      reference,
       loanStartDate,
       dueDate,
-      chargedProfit: Number(chargedProfit),
       status,
       contact,
-      amount: Number(amount),
+      investedAmount: Number(investedAmount),
+      chargedAmount: Number(chargedAmount),
       instalments: Number(instalments),
       agreement: agreementReponse,
       installmentHistory: [],

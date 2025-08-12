@@ -9,31 +9,6 @@ type Props = {
   }>;
 };
 
-export const GET = async (req: Request, { params }: Props) => {
-  try {
-    await database_connection();
-
-    const { id } = await params;
-
-    const investment = await investmentModel.findById(id);
-
-    if (!investment) {
-      return NextResponse.json(
-        { success: false, message: "Investment not found" },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({ success: true, data: investment });
-  } catch (error) {
-    console.error("Error fetching investment:", error);
-    return NextResponse.json(
-      { success: false, message: "Failed to fetch investment" },
-      { status: 500 }
-    );
-  }
-};
-
 export const PATCH = async (req: Request, { params }: Props) => {
   try {
     await database_connection();

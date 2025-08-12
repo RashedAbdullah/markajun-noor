@@ -6,6 +6,7 @@ import "./globals.css";
 import Header from "@/components/common/header";
 import Footer from "@/components/common/footer";
 import { organizationInfo } from "@/data/organization-info";
+import { Toaster } from "sonner";
 
 const tiroBangla = Tiro_Bangla({
   subsets: ["bengali"],
@@ -30,6 +31,7 @@ export default function RootLayout({
         <Header />
         {children}
         <Footer />
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   );

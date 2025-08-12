@@ -11,13 +11,13 @@ const investmentSchema = new mongoose.Schema(
       required: true,
     },
     agreement: {
-      type: String,
+      type: String, // image URL
       default: null,
     },
     contact: {
       type: String,
     },
-    amount: {
+    investedAmount: {
       type: Number,
       required: true,
     },
@@ -45,48 +45,77 @@ const investmentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    chargedProfit: {
+    chargedAmount: {
       type: Number,
       required: true,
-    },
-    paidProfit: {
-      type: Number,
-      default: 0,
     },
     status: {
       type: String,
       enum: ["Active", "Closed"],
       default: "Active",
     },
+
+    // pre saves
+    profit: {
+      type: Number,
+      default: 0,
+    },
+    paidProfit: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
   }
 );
 
-investmentSchema.virtual("totalPaid").get(function () {
-  return this.instalmentHistory.reduce(
-    (sum, installment) => sum + installment.amount,
-    0
-  );
-});
+investmentSchema.pre("save", function (next) {
+  const { investedAmount, chargedAmount, instalments, instalmentHistory } =
+    this;
+  if (
+    !investedAmount ||
+    !chargedAmount ||
+    !instalments ||
+    !Array.isArray(instalmentHistory)
+  ) {
+    return 0;
+  }
 
-investmentSchema.virtual("remainingAmount").get(function () {
-  const totalPaid = this.instalmentHistory.reduce(
-    (sum, i) => sum + i.amount,
-    0
-  );
-  return this.amount - totalPaid;
-});
+  this.profit = chargedAmount - investedAmount;
 
-investmentSchema.virtual("totalDue").get(function () {
-  return this.amount + this.chargedProfit;
-});
+  if (
+    !investedAmount ||
+    !chargedAmount ||
+    !instalments ||
+    !Array.isArray(instalmentHistory)
+  ) {
+    this.paidProfit = 0;
+  }
 
-investmentSchema.virtual("profitRemaining").get(function () {
-  return this.chargedProfit - this.paidProfit;
+  // Calculate per-instalment principal and profit
+  const principalPerInstalment = investedAmount / instalments;
+  const profitPerInstalment = (chargedAmount - investedAmount) / instalments;
+
+  // For each paid instalment, sum up the profit portion
+  const paidProfit = instalmentHistory.reduce((sum, installment) => {
+    // If the installment amount is less than or equal to principalPerInstalment + profitPerInstalment,
+    // then profit portion is profitPerInstalment, else proportionally calculate
+    const paid = Math.min(
+      installment.amount,
+      principalPerInstalment + profitPerInstalment
+    );
+    // Calculate how much of this installment is profit
+    const profit = Math.min(
+      profitPerInstalment,
+      Math.max(0, paid - principalPerInstalment)
+    );
+    return sum + profit;
+  }, 0);
+
+  this.paidProfit = paidProfit;
+
+  next();
 });
 
 investmentSchema.index({ status: 1 });

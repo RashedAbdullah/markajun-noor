@@ -12,22 +12,17 @@ export interface IInvestment {
   reference: string;
   agreement?: string | null;
   contact?: string;
-  amount: number;
+  investedAmount: number;
   instalments: number;
   instalmentHistory: IInstalment[];
   loanStartDate: string;
   dueDate: string;
-  chargedProfit: number;
+  chargedAmount: number;
+  profit: number;
   paidProfit: number;
   status: "Active" | "Closed";
 
   // Optional timestamps
   createdAt?: Date;
   updatedAt?: Date;
-
-  // Virtuals (computed values)
-  totalPaid: number;
-  remainingAmount: number;
-  totalDue: number;
-  profitRemaining: number;
 }

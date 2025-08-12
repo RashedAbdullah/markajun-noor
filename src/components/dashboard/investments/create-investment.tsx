@@ -23,6 +23,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
+import { toast } from "sonner";
 
 // Schema for form validation
 const investmentSchema = z.object({
@@ -30,11 +31,11 @@ const investmentSchema = z.object({
   reference: z.string().min(1, "Reference is required"),
   agreement: z.any().optional(), // For file upload
   contact: z.string().min(1, "Contact is required"),
-  amount: z.number().positive("Amount must be positive"),
+  investedAmount: z.number().positive("Amount must be positive"),
   instalments: z.number().min(1, "At least 1 instalment required"),
   loanStartDate: z.string().min(1, "Start date is required"),
   dueDate: z.string().min(1, "Due date is required"),
-  chargedProfit: z.number().min(0, "Profit cannot be negative"),
+  chargedAmount: z.number().min(0, "Profit cannot be negative"),
   status: z.enum(["Active", "Closed"]),
 });
 
@@ -49,11 +50,11 @@ const CreateInvestment = () => {
       investee: "",
       reference: "",
       contact: "",
-      amount: 0,
+      investedAmount: 0,
       instalments: 1,
       loanStartDate: format(new Date(), "yyyy-MM-dd"),
       dueDate: format(new Date(), "yyyy-MM-dd"),
-      chargedProfit: 0,
+      chargedAmount: 0,
       status: "Active",
     },
   });
@@ -64,11 +65,11 @@ const CreateInvestment = () => {
       formData.append("investee", data.investee);
       formData.append("reference", data.reference);
       formData.append("contact", data.contact);
-      formData.append("amount", data.amount.toString());
+      formData.append("investedAmount", data.investedAmount.toString());
       formData.append("instalments", data.instalments.toString());
       formData.append("loanStartDate", data.loanStartDate);
       formData.append("dueDate", data.dueDate);
-      formData.append("chargedProfit", data.chargedProfit.toString());
+      formData.append("chargedAmount", data.chargedAmount.toString());
       formData.append("status", data.status);
 
       // Handle file upload properly
@@ -87,6 +88,8 @@ const CreateInvestment = () => {
         const errorData = await res.json();
         throw new Error(errorData.error || "Failed to create investment");
       }
+
+      toast.success(<div className="">নতুন ইনভেস্টমেন্ট যুক্ত করা হয়েছে।</div>);
 
       form.reset();
       setAgreementPreview(null);
@@ -119,7 +122,7 @@ const CreateInvestment = () => {
             name="reference"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>রেফারেন্স নম্বর</FormLabel>
+                <FormLabel>রেফারেন্স / উকিল</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -171,7 +174,7 @@ const CreateInvestment = () => {
 
           <FormField
             control={form.control}
-            name="amount"
+            name="investedAmount"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>বিনিয়োগ পরিমাণ (টাকা)</FormLabel>
@@ -235,10 +238,10 @@ const CreateInvestment = () => {
 
           <FormField
             control={form.control}
-            name="chargedProfit"
+            name="chargedAmount"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>লাভের পরিমাণ (টাকা)</FormLabel>
+                <FormLabel>ধার্যকৃত (টাকা)</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
