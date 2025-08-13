@@ -1,5 +1,6 @@
 import React from "react";
 import policies from "@/data/policies.json";
+import { getEnToBn } from "@/utils/en-to-bn";
 
 const Policies = () => {
   return (
@@ -16,15 +17,21 @@ const Policies = () => {
                       policy.important && "bg-[#F7D4D4]"
                     }`}
                   >
-                    <div className="col-span-1">{index + 1}</div>
+                    <div className="col-span-1">{getEnToBn(index + 1)}</div>
                     <div
                       className={`${
-                        policy.important ? "lg:col-span-9 col-span-11" : "col-span-11"
+                        policy.important
+                          ? "lg:col-span-9 col-span-11"
+                          : "col-span-11"
                       }`}
                     >
                       {policy.content}
                     </div>
-                    {policy.important && <div className="lg:col-span-2 col-span-6 lg:ml-0 ml-4 bg-white rounded-full px-2 lg:text-base text-sm mt-2 lg:mt-2 lg:px-4 py-1 text-center text-[#d74f4f]">গুরুত্বপূর্ণ নীতি</div>}
+                    {policy.important && (
+                      <div className="lg:col-span-2 col-span-6 lg:ml-0 ml-4 bg-white rounded-full px-2 lg:text-base text-sm mt-2 lg:mt-2 lg:px-4 py-1 text-center text-[#d74f4f]">
+                        গুরুত্বপূর্ণ নীতি
+                      </div>
+                    )}
                   </div>
                 </li>
               )

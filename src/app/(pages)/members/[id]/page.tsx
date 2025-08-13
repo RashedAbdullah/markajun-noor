@@ -34,7 +34,7 @@ const MemberDetailsPage = async ({ params }: Props) => {
   const { data: user } = await paymentService.getPaymentsByMemberId(id, "", "");
   const { data: yearlyPayments } =
     await yearlyPaymentService.getYealyPaymentsByMemberId(id);
-  console.log(yearlyPayments);
+
   const paymentHistory = user?.payments;
   const totalPayments = paymentHistory.reduce(
     (sum: number, payment: IPayment) => sum + (payment.payment || 0),
@@ -45,7 +45,7 @@ const MemberDetailsPage = async ({ params }: Props) => {
     <div className="container mx-auto py-8">
       <div className="grid gap-6">
         {/* Member Profile Card */}
-        <Card className="shadow-md">
+        <Card className="shadow-sm">
           <CardHeader className="border-b">
             <div className="flex items-center space-x-4">
               <Avatar className="h-24 w-24">
@@ -76,16 +76,13 @@ const MemberDetailsPage = async ({ params }: Props) => {
               </h3>
               <div className="space-y-3">
                 <p>
-                  <span className="font-medium">পিতার নাম:</span>{" "}
-                  {member.father}
+                  <span className="font-medium">পিতা:</span> {member.father}
                 </p>
                 <p>
-                  <span className="font-medium">জাতীয় পরিচয়পত্র নম্বর:</span>{" "}
-                  {member.nationalId}
+                  <span className="font-medium">NID:</span> {member.nationalId}
                 </p>
                 <p>
-                  <span className="font-medium">মোবাইল নম্বর:</span>{" "}
-                  {member.mobile}
+                  <span className="font-medium">যোগাযোগ:</span> {member.mobile}
                 </p>
                 <p>
                   <span className="font-medium">ইমেইল:</span> {member.email}
@@ -129,7 +126,6 @@ const MemberDetailsPage = async ({ params }: Props) => {
           <CardContent>
             {paymentHistory.length > 0 ? (
               <Table>
-                <TableCaption>সর্বশেষ মাসিক পেমেন্ট হিস্টোরি</TableCaption>
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-[150px]">মাস</TableHead>
