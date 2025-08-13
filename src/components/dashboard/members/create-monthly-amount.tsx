@@ -31,6 +31,7 @@ import { format } from "date-fns";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IUser } from "../../../../@types/user";
+import { toast } from "sonner";
 // import { paymentService } from "@/services";
 
 // Schema for form validation with Bangla error messages
@@ -91,7 +92,7 @@ const CreateMonthlyAmount = ({ members }: { members: IUser[] }) => {
         throw new Error("Failed to create payment");
       }
 
-      // await paymentService.createPayment(newPayment);
+      toast.success("নতুন মাসের টাকা যুক্ত করা হয়েছে।");
       form.reset();
     } catch (error) {
       console.error("Error submitting form:", error);

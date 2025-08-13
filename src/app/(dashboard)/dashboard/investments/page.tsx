@@ -2,12 +2,13 @@ import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CreateInvestment from "@/components/dashboard/investments/create-investment";
 import UpdateInvestment from "@/components/dashboard/investments/update-investment";
-import { InvestmentService } from "@/services";
+import { InvestmentService, memberService } from "@/services";
 import AddInstalmentForm from "@/components/dashboard/investments/add-instalment";
 
 const InvestmentsPage = async () => {
   try {
     const { data: investments } = await InvestmentService.getInvestments();
+    const { data: members } = await memberService.getMembers();
 
     return (
       <div className="container">
@@ -26,19 +27,23 @@ const InvestmentsPage = async () => {
           {/* Add Investment Tab */}
           {investments.length > 0 && (
             <TabsContent value="instalment" className="mt-6">
-              <AddInstalmentForm investments={JSON.parse(JSON.stringify(investments))} />
+              <AddInstalmentForm
+                investments={JSON.parse(JSON.stringify(investments))}
+              />
             </TabsContent>
           )}
 
           {/* Add Investment Tab */}
           <TabsContent value="add" className="mt-6">
-            <CreateInvestment />
+            <CreateInvestment members={JSON.parse(JSON.stringify(members))} />
           </TabsContent>
 
           {/* Update Investment Tab */}
           {investments.length > 0 && (
             <TabsContent value="update" className="mt-6">
-              <UpdateInvestment investments={JSON.parse(JSON.stringify(investments))} />
+              <UpdateInvestment
+                investments={JSON.parse(JSON.stringify(investments))}
+              />
             </TabsContent>
           )}
         </Tabs>

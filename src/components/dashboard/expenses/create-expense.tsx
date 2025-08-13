@@ -16,7 +16,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { expensesService } from "@/services";
+import { toast } from "sonner";
 
 type Expense = {
   cost: string;
@@ -64,7 +64,7 @@ const CreateExpense = () => {
         throw new Error("Failed to create expense");
       }
 
-      // await expensesService.createExpense(newExpense);
+      toast.success("নতুন খরচ যুক্ত করা হয়েছে।");
 
       form.reset();
     } catch (error) {

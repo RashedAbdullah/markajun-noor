@@ -24,6 +24,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { toast } from "sonner";
+import { IUser } from "../../../../@types/user";
 
 // Schema for form validation
 const investmentSchema = z.object({
@@ -41,7 +42,7 @@ const investmentSchema = z.object({
 
 type InvestmentFormValues = z.infer<typeof investmentSchema>;
 
-const CreateInvestment = () => {
+const CreateInvestment = ({ members }: { members: IUser[] }) => {
   const [agreementPreview, setAgreementPreview] = useState<string | null>(null);
 
   const form = useForm<InvestmentFormValues>({
@@ -89,7 +90,7 @@ const CreateInvestment = () => {
         throw new Error(errorData.error || "Failed to create investment");
       }
 
-      toast.success(<div className="">নতুন ইনভেস্টমেন্ট যুক্ত করা হয়েছে।</div>);
+      toast.success("নতুন ইনভেস্টমেন্ট যুক্ত করা হয়েছে।");
 
       form.reset();
       setAgreementPreview(null);
@@ -108,7 +109,9 @@ const CreateInvestment = () => {
             name="investee"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>বিনিয়োগ গ্রহীতা</FormLabel>
+                <FormLabel>
+                  বিনিয়োগ গ্রহীতা (আইডি কার্ড ফলো করে নাম যুক্ত করুন)
+                </FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -122,10 +125,23 @@ const CreateInvestment = () => {
             name="reference"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>রেফারেন্স / উকিল</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
+                <FormLabel>
+                  রেফারেন্স / উকিল (যার মাধ্যমে বিনিয়োগ সম্পাদিত হয়েছে)
+                </FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="মেম্বার সিলেক্ট করুন" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {members.map((member) => (
+                      <SelectItem key={member._id} value={member.name}>
+                        {member.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -241,7 +257,7 @@ const CreateInvestment = () => {
             name="chargedAmount"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>ধার্যকৃত (টাকা)</FormLabel>
+                <FormLabel>ধার্যকৃত (মুনাফা সহ)</FormLabel>
                 <FormControl>
                   <Input
                     type="number"

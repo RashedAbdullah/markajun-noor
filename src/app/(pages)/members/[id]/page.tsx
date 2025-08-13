@@ -41,6 +41,8 @@ const MemberDetailsPage = async ({ params }: Props) => {
     0
   );
 
+  console.log(yearlyPayments[0]?.amount);
+
   return (
     <div className="container mx-auto py-8">
       <div className="grid gap-6">
@@ -109,7 +111,9 @@ const MemberDetailsPage = async ({ params }: Props) => {
                 </p>
                 <p>
                   <span className="font-medium">মোট জমা:</span>{" "}
-                  {formatPrice(yearlyPayments[0]?.amount + totalPayments)}
+                  {formatPrice(
+                    (yearlyPayments[0]?.amount ?? 0) + totalPayments
+                  )}
                 </p>
               </div>
             </div>

@@ -24,6 +24,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IInvestment } from "../../../../@types/investment";
 import { formatPrice } from "@/utils/formate-price";
+import { toast } from "sonner";
 
 // Updated schema with only the fields used in the PATCH controller
 const investmentSchema = z.object({
@@ -87,6 +88,8 @@ const UpdateInvestment = ({ investments }: { investments: IInvestment[] }) => {
       if (!response.ok) {
         throw new Error("Failed to update investment");
       }
+
+      toast.success("ইনভেস্টমেন্ট সফলভাবে আপডেট করা হয়েছে");
 
       form.reset();
       setSelectedInvestment(null);
@@ -234,7 +237,7 @@ const UpdateInvestment = ({ investments }: { investments: IInvestment[] }) => {
                 name="chargedAmount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>লাভের পরিমাণ (টাকা)</FormLabel>
+                    <FormLabel>ধার্যকৃত (টাকা)</FormLabel>
                     <FormControl>
                       <Input
                         type="number"

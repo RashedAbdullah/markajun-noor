@@ -24,6 +24,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { IExpense } from "../../../../@types/expense";
+import { toast } from "sonner";
 
 // Schema for form validation
 const expenseSchema = z.object({
@@ -68,6 +69,8 @@ const UpdateExpense = ({ expenses }: { expenses: IExpense[] }) => {
       if (!res.ok) {
         throw new Error("Failed to update expense");
       }
+
+      toast.success("খরচ আপডেট করা হয়েছে।");
 
       form.reset();
       setSelectedExpense(null);

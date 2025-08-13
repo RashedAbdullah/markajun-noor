@@ -8,24 +8,32 @@ const secret = new TextEncoder().encode(
 
 export async function middleware(req: NextRequest) {
   const { pathname, origin } = req.nextUrl;
+  const accessToken = req.cookies.get("accessToken")?.value;
+
+  // ✅ If already logged in and visiting /signin → redirect to home
+  if (pathname === "/signin" && accessToken) {
+    try {
+      await jwtVerify(accessToken, secret);
+      return NextResponse.redirect(new URL("/", origin));
+    } catch {
+      // Invalid/expired token → allow signin page
+    }
+  }
 
   const publicPaths = ["/signin", "/unauthorized"];
   if (publicPaths.includes(pathname)) {
     return NextResponse.next();
   }
 
-  const accessToken = req.cookies.get("accessToken")?.value;
-
+  // ✅ If not logged in → redirect to signin
   if (!accessToken) {
     return NextResponse.redirect(new URL("/signin", origin));
   }
 
   try {
-    // console.log("access token ", process.env.NEXT_PRIVATE_ACCESS_TOKEN_SECRET);
-
     const { payload } = await jwtVerify(accessToken, secret);
 
-    // ADMIN-only access for /dashboard
+    // ✅ Only admins can access /dashboard
     if (pathname.startsWith("/dashboard") && payload.role !== "ADMIN") {
       return NextResponse.redirect(new URL("/unauthorized", origin));
     }

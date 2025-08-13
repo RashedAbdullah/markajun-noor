@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { IUser } from "../../../../@types/user";
+import { toast } from "sonner";
 
 // Zod schema based on your mongoose model
 const memberSchema = z.object({
@@ -76,11 +77,12 @@ const UpdateMemberForm = ({ members }: { members: IUser[] }) => {
             nationalId: member.nationalId || "",
             mobile: member.mobile || "",
             position: member.position,
-            entryDate: typeof member.entryDate === "string"
-              ? member.entryDate
-              : member.entryDate
-              ? new Date(member.entryDate).toISOString().slice(0, 10)
-              : "",
+            entryDate:
+              typeof member.entryDate === "string"
+                ? member.entryDate
+                : member.entryDate
+                ? new Date(member.entryDate).toISOString().slice(0, 10)
+                : "",
             shares: Number(member.shares) || 0,
           });
         }
@@ -111,6 +113,8 @@ const UpdateMemberForm = ({ members }: { members: IUser[] }) => {
       if (!res.ok) {
         throw new Error("Failed to update member");
       }
+
+      toast.success("সদস্য তথ্য আপডেট করা হয়েছে।");
 
       form.reset();
     } catch (error) {

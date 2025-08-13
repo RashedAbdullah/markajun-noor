@@ -44,10 +44,14 @@ const InvestmentDetailsPage = async ({ params }: Props) => {
   );
 
   const remainingAmount = investment.chargedAmount - totalPaid;
-  const repaymentProgress = (totalPaid / investment.chargedAmount) * 100;
+  const repaymentProgress =
+    ((totalPaid - investment.profit) /
+      (investment.chargedAmount - investment.profit)) *
+    100;
+
+  console.log("repaymentProgress ", repaymentProgress);
 
   const profitProgress = (investment.paidProfit / investment.profit) * 100;
-  console.log("profitProgress ", profitProgress);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-6 font-kalpurush">
@@ -159,7 +163,7 @@ const InvestmentDetailsPage = async ({ params }: Props) => {
               <div className="flex justify-between items-center mb-1">
                 <p className="text-sm text-muted-foreground">মোট অর্থ</p>
                 <p className="text-sm font-medium">
-                  {formatPrice(investment.chargedAmount)}
+                  {formatPrice(investment.chargedAmount - investment.profit)}
                 </p>
               </div>
               <Progress value={repaymentProgress} className="h-2" />
@@ -169,7 +173,7 @@ const InvestmentDetailsPage = async ({ params }: Props) => {
               <div className="bg-green-50 p-3 rounded-lg border border-green-100">
                 <p className="text-sm text-green-800">পরিশোধিত</p>
                 <p className="text-lg font-semibold text-green-600">
-                  {formatPrice(totalPaid)}
+                  {formatPrice(totalPaid - investment.profit)}
                 </p>
                 <p className="text-xs text-green-600 mt-1">
                   ({repaymentProgress.toFixed(1)}%)

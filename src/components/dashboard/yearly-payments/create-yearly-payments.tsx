@@ -26,7 +26,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { IUser } from "../../../../@types/user";
 import { IYearlyPayment } from "../../../../@types/yearly-amount";
 import mongoose from "mongoose";
-import { yearlyPaymentService } from "@/services/api/yearly-payment-api";
+import { toast } from "sonner";
 
 // Schema for form validation with Bangla error messages
 const paymentSchema = z.object({
@@ -73,6 +73,8 @@ const CreateYearlyPayment = ({ members }: { members: IUser[] }) => {
       if (!res.ok) {
         throw new Error("Failed to create yearly payment");
       }
+
+      toast.success("নতুন বার্ষিক / এককালীন এমাউন্ট যুক্ত করা হয়েছে।");
 
       form.reset();
     } catch (error) {

@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { format } from "date-fns";
 import { IBankProfit } from "../../../../@types/bank-profit";
+import { toast } from "sonner";
 
 // Schema for form validation
 const bankProfitSchema = z.object({
@@ -54,7 +55,7 @@ const CreateProfit = () => {
         throw new Error("Failed to create bank profit");
       }
 
-      // await BankProfitService.createBankProfit(newBankProfit);
+      toast.success("নতুন প্রফিট যুক্ত করা হয়েছে।");
 
       form.reset();
     } catch (error) {

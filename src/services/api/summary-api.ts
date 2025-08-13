@@ -70,6 +70,13 @@ export const summaryService = {
         (totalInvestment[0]?.total || 0) -
         (totalExpense[0]?.total || 0);
 
+      // 11. টোটাল মুনাফা
+      const totalProfit = await investmentModel.aggregate([
+        { $group: { _id: null, total: { $sum: "$profit" } } },
+      ]);
+
+      console.log(totalProfit);
+
       return {
         totalInvestment: totalInvestment[0]?.total || 0,
         currentInvestment:
@@ -87,6 +94,7 @@ export const summaryService = {
         totalShares: sharesCount[0]?.total || 0,
         totalExpense: totalExpense[0]?.total || 0,
         currentDeposit,
+        totalProfit: totalProfit[0]?.total || 0,
       };
     } catch (error) {
       console.error("Error fetching summary:", error);

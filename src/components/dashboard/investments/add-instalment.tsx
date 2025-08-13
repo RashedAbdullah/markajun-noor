@@ -66,7 +66,7 @@ const AddInstalmentForm = ({ investments }: { investments: IInvestment[] }) => {
         throw new Error("Failed to add instalment");
       }
 
-      toast.success("ইনস্টলমেন্ট সফলভাবে যোগ করা হয়েছে");
+      toast.success("নতুন কিস্তি সফলভাবে যোগ করা হয়েছে");
       form.reset();
     } catch (error) {
       console.error("Error while adding instalment ", error);

@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { IBankProfit } from "../../../../@types/bank-profit";
-import { BankProfitService } from "@/services";
+import { toast } from "sonner";
 
 // Schema for form validation
 const bankProfitSchema = z.object({
@@ -71,6 +71,8 @@ const UpdateProfit = ({ bankProfits }: { bankProfits: IBankProfit[] }) => {
       if (!res.ok) {
         throw new Error("Failed to update bank profit");
       }
+
+      toast.success("ব্যাংক প্রফিট আপডেট করা হয়েছে।");
 
       form.reset();
       setSelectedProfit(null);
