@@ -43,13 +43,12 @@ const InvestmentDetailsPage = async ({ params }: Props) => {
     0
   );
 
-  const remainingAmount = investment.chargedAmount - totalPaid;
+  const remainingAmount =
+    investment.investedAmount - (totalPaid - investment.paidProfit);
   const repaymentProgress =
-    ((totalPaid - investment.profit) /
+    ((totalPaid - investment.paidProfit) /
       (investment.chargedAmount - investment.profit)) *
     100;
-
-  console.log("repaymentProgress ", repaymentProgress);
 
   const profitProgress = (investment.paidProfit / investment.profit) * 100;
 
@@ -173,7 +172,7 @@ const InvestmentDetailsPage = async ({ params }: Props) => {
               <div className="bg-green-50 p-3 rounded-lg border border-green-100">
                 <p className="text-sm text-green-800">পরিশোধিত</p>
                 <p className="text-lg font-semibold text-green-600">
-                  {formatPrice(totalPaid - investment.profit)}
+                  {formatPrice(totalPaid - investment.paidProfit)}
                 </p>
                 <p className="text-xs text-green-600 mt-1">
                   ({repaymentProgress.toFixed(1)}%)
@@ -203,7 +202,7 @@ const InvestmentDetailsPage = async ({ params }: Props) => {
           <CardContent className="space-y-4">
             <div>
               <div className="flex justify-between items-center mb-1">
-                <p className="text-sm text-muted-foreground">আসনপ্রাপ্ত লাভ</p>
+                <p className="text-sm text-muted-foreground">পরিশোধিত লাভ</p>
                 <p className="text-sm font-medium text-blue-600">
                   {formatPrice(investment.profit)}
                 </p>
